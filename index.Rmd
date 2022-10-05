@@ -1,0 +1,66 @@
+---
+title: "STAA566 HW#3 Maps"
+author: "John Bushey"
+date: "10/4/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Data: The data I am using is from the List of sea level stations that were used in the actuarial climate index. The longitude and latitude lines wee taken for each of the 76 stations and graphed across north America.
+
+The Spatial units being displayed is north America.
+
+I am trying to communicate where the different stations are located. As well as the name of the city the station is located in. To do this I color coded by region. The region is an average of a group of stations. I also created hover labels on the pins to tell me the station name. Overall this map will pair well with the Sea level rising data as well as the ACI data. We can now understand how a region and its geography plays a role in sea rising.
+
+
+```{r}
+library(leaflet)
+library(readxl)
+cord <- read_excel("C:/Users/14252/Desktop/locations_ACI.xlsx")
+cord <- as.data.frame(cord)
+cord
+# Function to assign colors
+#make_color <- function(cord) {
+make_color <- function(cord) { 
+ sapply(cord$number, function(y) {
+    if(y <= 9 ) {
+      "green"
+    } else if(y <= 31) {
+      "orange"
+    } else if(y <= 36) {
+      "yellow"
+    } else if(y <= 37) {
+      "brown"
+    } else if(y <= 42) {
+      "purple"
+    } else if(y <= 43) {
+      "pink"
+    } else if(y <= 52) {
+      "magenta"
+    } else if(y <= 65) {
+      "blue"
+    } else if(y <= 68) {
+      "turquoise"
+    } else {
+      "violet"
+    } })
+}
+
+# create icon format
+icons <- awesomeIcons(
+  icon = 'ios-close',
+  iconColor = 'black',
+  library = 'fa', 
+  markerColor = make_color(cord)
+)
+leaflet(cord) %>%
+  addTiles() %>%
+ addAwesomeMarkers(~longitude, ~latitude,
+             icon=icons, label = as.character(c(cord$`Station Name`)))
+```
+
+
